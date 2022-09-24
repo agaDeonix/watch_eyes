@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "com.pinkunicorp.watch.eyes.Wearable-merged_res-46:/drawable-nodpi_photo_placeholder.png.flat",
+        "source": "com.pinkunicorp.watch.eyes.Wearable-main-48:/drawable-nodpi/photo_placeholder.png"
+    },
+    {
+        "merged": "com.pinkunicorp.watch.eyes.Wearable-merged_res-46:/drawable-xhdpi_ic_launcher.png.flat",
+        "source": "com.pinkunicorp.watch.eyes.Wearable-main-48:/drawable-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.pinkunicorp.watch.eyes.Wearable-merged_res-46:/drawable-mdpi_ic_launcher.png.flat",
+        "source": "com.pinkunicorp.watch.eyes.Wearable-main-48:/drawable-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.pinkunicorp.watch.eyes.Wearable-merged_res-46:/drawable-hdpi_ic_launcher.png.flat",
+        "source": "com.pinkunicorp.watch.eyes.Wearable-main-48:/drawable-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.pinkunicorp.watch.eyes.Wearable-merged_res-46:/drawable-xxhdpi_ic_launcher.png.flat",
+        "source": "com.pinkunicorp.watch.eyes.Wearable-main-48:/drawable-xxhdpi/ic_launcher.png"
+    }
+]
