@@ -44,7 +44,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             MainApp(
                 state = clientDataViewModel.state,
-                manualPosition = clientDataViewModel.manualPosition
+                manualPosition = clientDataViewModel.manualPosition,
+                specAnimation = clientDataViewModel.specAnimation
             )
         }
 

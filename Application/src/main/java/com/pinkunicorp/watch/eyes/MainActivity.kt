@@ -65,7 +65,8 @@ class MainActivity : ComponentActivity() {
                 MainApp(
                     onStateClick = ::sendNewState,
                     onStartWearableActivityClick = ::startWearableActivity,
-                    onPositionChange = ::sendManualPosition
+                    onPositionChange = ::sendManualPosition,
+                    onStartAnimation = ::sendSpec
                 )
             }
         }
@@ -131,14 +132,33 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun sendManualPosition(x: Float, y: Float) {
-//        sendManualPositionJob?.cancel()
+    private fun sendManualPosition(x: Float, y: Float, focus: Float) {
+        sendManualPositionJob?.cancel()
         sendManualPositionJob = lifecycleScope.launch {
-//            delay(10)
+            delay(100)
             try {
                 val request = PutDataMapRequest.create(MANUAL_POSITION_PATH).apply {
-                    dataMap.putString(MANUAL_POSITION_KEY, "$x;$y")
-                    Log.e("APP", "X:${x} Y:${y}")
+                    dataMap.putString(MANUAL_POSITION_KEY, "$x;$y;$focus")
+                }
+                    .asPutDataRequest()
+                    .setUrgent()
+
+                val result = dataClient.putDataItem(request).await()
+
+                Log.d(TAG, "DataItem saved: $result")
+            } catch (cancellationException: CancellationException) {
+                throw cancellationException
+            } catch (exception: Exception) {
+                Log.d(TAG, "Saving DataItem failed: $exception")
+            }
+        }
+    }
+
+    private fun sendSpec(animation: Int) {
+        lifecycleScope.launch {
+            try {
+                val request = PutDataMapRequest.create(SPEC_PATH).apply {
+                    dataMap.putInt(SPEC_KEY, animation)
                 }
                     .asPutDataRequest()
                     .setUrgent()
@@ -162,5 +182,8 @@ class MainActivity : ComponentActivity() {
         private const val STATE_KEY = "state"
         private const val MANUAL_POSITION_PATH = "/manual-position"
         private const val MANUAL_POSITION_KEY = "manual-position"
+
+        private const val SPEC_PATH = "/spec"
+        private const val SPEC_KEY = "spec"
     }
 }

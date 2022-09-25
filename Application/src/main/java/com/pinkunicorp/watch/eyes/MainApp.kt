@@ -21,9 +21,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +48,8 @@ enum class State {
 fun MainApp(
     onStateClick: (state: State) -> Unit,
     onStartWearableActivityClick: () -> Unit,
-    onPositionChange: (x: Float, y: Float) -> Unit
+    onPositionChange: (x: Float, y: Float, focus: Float) -> Unit,
+    onStartAnimation: (number: Int) -> Unit
 ) {
     var currentState by remember {
         mutableStateOf(State.IDLE)
@@ -103,8 +102,15 @@ fun MainApp(
                 Text(text = "Spcl")
             }
         }
-        if (currentState == State.MANUAL) {
-            ManualController(onPositionChange)
+        when(currentState) {
+            State.MANUAL -> {
+                ManualController(onPositionChange)
+            }
+            State.SPECIAL -> {
+                SpecialController(onStartAnimation)
+            }
+            else -> {
+            }
         }
         Spacer(modifier = Modifier.weight(1f))
         Button(
@@ -117,13 +123,44 @@ fun MainApp(
 }
 
 @Composable
-private fun ManualController(onPositionChange: (x: Float, y: Float) -> Unit) {
+private fun SpecialController(onStartAnimation: (number: Int) -> Unit) {
+    Column {
+        Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = "Animations"
+        )
+        Button(
+            onClick = { onStartAnimation(0) },
+            modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
+        ) {
+            Text(text = "Animation 1")
+        }
+        Button(
+            onClick = { onStartAnimation(1) },
+            modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
+        ) {
+            Text(text = "Animation 2")
+        }
+        Button(
+            onClick = { onStartAnimation(2) },
+            modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
+        ) {
+            Text(text = "Animation 3")
+        }
+    }
+}
+
+@Composable
+private fun ManualController(onPositionChange: (x: Float, y: Float, focus: Float) -> Unit) {
     var goalPosX by remember {
         mutableStateOf(0f)
     }
     var goalPosY by remember {
         mutableStateOf(0f)
     }
+    var posX = 0f
+    var posY = 0f
+    var focusValue by remember { mutableStateOf(0.2f) }
     Box(
         modifier = Modifier
             .background(color = Color.Gray)
@@ -158,8 +195,10 @@ private fun ManualController(onPositionChange: (x: Float, y: Float) -> Unit) {
                 goalPosX = newGoalPosX - centerX
                 goalPosY = newGoalPosY - centerY
 
-                Log.e("APP", "X: ${goalPosX / (radius - goalRadius)} Y: ${goalPosY / (radius - goalRadius)}")
-                onPositionChange(goalPosX / (radius - goalRadius), goalPosY / (radius - goalRadius))
+                posX = goalPosX / (radius - goalRadius)
+                posY = goalPosY / (radius - goalRadius)
+                Log.e("APP", "X: $posX Y: $posY Focus: $focusValue")
+                onPositionChange(posX, posY, focusValue)
 
                 drawCircle(
                     center = Offset(x = centerX, y = centerY),
@@ -178,6 +217,9 @@ private fun ManualController(onPositionChange: (x: Float, y: Float) -> Unit) {
                 )
             })
     }
+    Slider(value = focusValue, onValueChange = {
+        focusValue = it
+        onPositionChange(posX, posY, focusValue) })
 }
 
 private fun getNewGoalPos(
@@ -232,6 +274,7 @@ fun MainAppPreview() {
     MainApp(
         onStateClick = {},
         onStartWearableActivityClick = {},
-        { x, y -> }
+        { x, y, focus -> },
+        {}
     )
 }

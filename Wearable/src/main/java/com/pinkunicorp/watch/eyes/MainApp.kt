@@ -16,9 +16,7 @@
 package com.pinkunicorp.watch.eyes
 
 import android.graphics.PointF
-import android.util.Log
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.EaseInElastic
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -54,7 +52,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainApp(
     state: Int,
-    manualPosition: Pair<Float, Float>
+    manualPosition: Triple<Float, Float, Float>,
+    specAnimation: Int?,
 ) {
     WearAppTheme {
         Column(
@@ -64,7 +63,7 @@ fun MainApp(
                 .selectableGroup(),
             verticalArrangement = Arrangement.Center
         ) {
-            Circle(state, manualPosition)
+            Circle(state, manualPosition, specAnimation)
         }
     }
 }
@@ -83,7 +82,7 @@ fun WearAppTheme(
 }
 
 @Composable
-fun Circle(state: Int, manualPosition: Pair<Float, Float>) {
+fun Circle(state: Int, manualPosition: Triple<Float, Float, Float>, specAnimation: Int?) {
     val offsetX = remember {
         Animatable(0f)
     }
@@ -94,7 +93,7 @@ fun Circle(state: Int, manualPosition: Pair<Float, Float>) {
         Animatable(0.2f)
     }
 //    Log.e("WEAR", "Input X:${manualPosition.first} Y:${manualPosition.second}")
-    LaunchedEffect(state, manualPosition) {
+    LaunchedEffect(state, manualPosition, specAnimation) {
         val duration = when (state) {
             0 -> 1000L
             1 -> 100L
@@ -103,7 +102,8 @@ fun Circle(state: Int, manualPosition: Pair<Float, Float>) {
         }
         val x = manualPosition.first
         val y = manualPosition.second
-        while (state != 2) {
+        val manualFocus = manualPosition.third
+        while (state == 0 || state == 1) {
             launch {
                 val a = async {
                     offsetX.animateTo(
@@ -130,9 +130,229 @@ fun Circle(state: Int, manualPosition: Pair<Float, Float>) {
         if (state == 2) {
 //            Log.e("WEAR", "Launch X:$x Y:$y")
             launch {
-                val a = async { offsetX.animateTo(x, animationSpec = tween(duration.toInt(), easing = EaseInOut)) }
-                val b = async { offsetY.animateTo(y, animationSpec = tween(duration.toInt(), easing = EaseInOut)) }
-                awaitAll(a, b)
+                val a = async {
+                    offsetX.animateTo(
+                        x,
+                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                    )
+                }
+                val b = async {
+                    offsetY.animateTo(
+                        y,
+                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                    )
+                }
+                val c = async {
+                    focus.animateTo(
+                        manualFocus,
+                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                    )
+                }
+                awaitAll(a, b, c)
+            }
+        }
+        while (state == 3) {
+            when (specAnimation) {
+                0 -> {
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                -1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                }
+                1 -> {
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                -1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                }
+                2 -> {
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                -1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                    launch {
+                        val a = async {
+                            offsetX.animateTo(
+                                0f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val b = async {
+                            offsetY.animateTo(
+                                -1f,
+                                animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                            )
+                        }
+                        val c = async {
+                            focus.animateTo(
+                                (Random.nextInt(50) + 20) / 100f,
+                                animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                            )
+                        }
+                        awaitAll(a, b, c)
+                    }
+                    delay(duration)
+                }
+                else -> {
+                    launch {
+                        offsetX.animateTo(
+                            0f,
+                            animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                        )
+                        offsetY.animateTo(
+                            0f,
+                            animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                        )
+                        focus.animateTo(
+                            0.2f,
+                            animationSpec = tween(duration.toInt() + 500, easing = EaseInOut)
+                        )
+                    }
+                    delay(duration)
+                    break
+                }
             }
         }
     }
@@ -185,7 +405,7 @@ fun Circle(state: Int, manualPosition: Pair<Float, Float>) {
 
             drawCircle(
                 center = Offset(x = centerX - 45, y = centerY - 45),
-                color = androidx.compose.ui.graphics.Color.White,
+                color = Color.White,
                 radius = 30.dp.value,
                 alpha = 0.7f
             )
@@ -249,7 +469,7 @@ fun DefaultPreview() {
                 .selectableGroup(),
             verticalArrangement = Arrangement.Center
         ) {
-            Circle(0, Pair(0f, 0f))
+            Circle(0, Triple(0f, 0f, 0.2f), null)
         }
     }
 }

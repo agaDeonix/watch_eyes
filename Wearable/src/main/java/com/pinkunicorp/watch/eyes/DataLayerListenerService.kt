@@ -92,5 +92,8 @@ class DataLayerListenerService : WearableListenerService() {
 
         const val MANUAL_POSITION_PATH = "/manual-position"
         const val MANUAL_POSITION_KEY = "manual-position"
+
+        const val SPEC_PATH = "/spec"
+        const val SPEC_KEY = "spec"
     }
 }
