@@ -18,14 +18,8 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-
-enum class State {
-    IDLE,
-    INSANE,
-    MANUAL,
-    SPECIAL
-}
+import com.pinkunicorp.common.BlackEye
+import com.pinkunicorp.common.CommonEye
 
 /**
  * The UI affording the actions the user can take, along with a list of the events and the image
@@ -33,14 +27,15 @@ enum class State {
  */
 @Composable
 fun Home(
-    onStateClick: (state: State) -> Unit,
+    onStateClick: (state: CommonEye.State) -> Unit,
     onStartWearableActivityClick: () -> Unit,
     onPositionChange: (x: Float, y: Float, focus: Float) -> Unit,
     onStartAnimation: (number: Int) -> Unit,
-    onShowLibraryClick: () -> Unit
+    onShowLibraryClick: () -> Unit,
+    currentEye: CommonEye
 ) {
     var currentState by remember {
-        mutableStateOf(State.IDLE)
+        mutableStateOf(currentEye.getSupportedStates().first())
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -49,52 +44,24 @@ fun Home(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(
-                onClick = {
-                    currentState = State.IDLE
-                    onStateClick(State.IDLE)
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == State.IDLE) Color.Green else Color.Gray),
-                modifier = Modifier.padding(15.dp)
-            ) {
-                Text(text = "Idl")
-            }
-            Button(
-                onClick = {
-                    currentState = State.INSANE
-                    onStateClick(State.INSANE)
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == State.INSANE) Color.Green else Color.Gray),
-                modifier = Modifier.padding(15.dp)
-            ) {
-                Text(text = "Insn")
-            }
-            Button(
-                onClick = {
-                    currentState = State.MANUAL
-                    onStateClick(State.MANUAL)
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == State.MANUAL) Color.Green else Color.Gray),
-                modifier = Modifier.padding(15.dp)
-            ) {
-                Text(text = "Mnl")
-            }
-            Button(
-                onClick = {
-                    currentState = State.SPECIAL
-                    onStateClick(State.SPECIAL)
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == State.SPECIAL) Color.Green else Color.Gray),
-                modifier = Modifier.padding(15.dp)
-            ) {
-                Text(text = "Spcl")
+            currentEye.getSupportedStates().forEach {
+                Button(
+                    onClick = {
+                        currentState = it
+                        onStateClick(it)
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == it) Color.Blue else Color.Gray),
+                    modifier = Modifier.padding(15.dp)
+                ) {
+                    StateName(it)
+                }
             }
         }
         when (currentState) {
-            State.MANUAL -> {
+            CommonEye.State.MANUAL -> {
                 ManualController(onPositionChange)
             }
-            State.SPECIAL -> {
+            CommonEye.State.SPECIAL -> {
                 SpecialController(onStartAnimation)
             }
             else -> {
@@ -115,10 +82,12 @@ fun Home(
                     text = "OPEN"
                 )
             }
-            Box(modifier = Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
-                .padding(end = 10.dp)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 10.dp)
+            ) {
                 Button(
                     onClick = { onShowLibraryClick() },
                     modifier = Modifier
@@ -133,6 +102,18 @@ fun Home(
             }
         }
     }
+}
+
+@Composable
+fun StateName(state: CommonEye.State) {
+    Text(
+        text = when (state) {
+            CommonEye.State.IDLE -> "Idl"
+            CommonEye.State.INSANE -> "Insn"
+            CommonEye.State.MANUAL -> "Mnl"
+            CommonEye.State.SPECIAL -> "Spcl"
+        }
+    )
 }
 
 @Composable
@@ -290,6 +271,7 @@ fun HomePreview() {
         onStartWearableActivityClick = {},
         { x, y, focus -> },
         {},
-        {}
+        {},
+        BlackEye()
     )
 }

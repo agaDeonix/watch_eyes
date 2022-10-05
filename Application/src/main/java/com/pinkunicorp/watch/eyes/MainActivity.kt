@@ -29,10 +29,10 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import com.pinkunicorp.common.CommonEye
 import com.pinkunicorp.watch.eyes.screen.Home
 import com.pinkunicorp.watch.eyes.screen.Library
 import com.pinkunicorp.watch.eyes.screen.Screen
-import com.pinkunicorp.watch.eyes.screen.State
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
@@ -63,13 +63,21 @@ class MainActivity : ComponentActivity() {
                             onStartAnimation = ::sendSpec,
                             onShowLibraryClick = {
                                 navController.navigate(Screen.Library.route)
-                            }
+                            },
+                            currentEye = clientDataViewModel.currentEye
                         )
                     }
                     composable(Screen.Library.route) {
-                        Library(onBackClick =  {
+                        Library(onBackClick = {
                             navController.navigateUp()
-                        })
+                        },
+                            allEyes = clientDataViewModel.allEyes,
+                            currentEye = clientDataViewModel.currentEye,
+                            onSelectNewEye = {
+                                clientDataViewModel.currentEye = it
+                                navController.navigateUp()
+                            }
+                        )
                     }
                 }
             }
@@ -116,7 +124,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun sendNewState(state: State) {
+    private fun sendNewState(state: CommonEye.State) {
         lifecycleScope.launch {
             try {
                 val request = PutDataMapRequest.create(STATE_PATH).apply {

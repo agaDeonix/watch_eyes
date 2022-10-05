@@ -20,6 +20,12 @@ class VampireEye : CommonEye() {
 
     override fun getName() = "Vampire EYE"
 
+    override fun getStoreId(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun getSupportedStates() = listOf(State.IDLE, State.MANUAL, State.SPECIAL)
+
     @Composable
     override fun draw() {
         val offsetX = remember {

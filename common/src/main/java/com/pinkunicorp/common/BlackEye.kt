@@ -27,6 +27,12 @@ class BlackEye : CommonEye() {
 
     override fun getName() = "Black EYE"
 
+    override fun getStoreId(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun getSupportedStates() = listOf(State.IDLE, State.INSANE, State.MANUAL, State.SPECIAL)
+
     @Composable
     override fun draw() {
         val offsetX = remember {

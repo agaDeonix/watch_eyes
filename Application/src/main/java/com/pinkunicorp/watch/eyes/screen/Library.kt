@@ -19,7 +19,6 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.pinkunicorp.common.BlackEye
 import com.pinkunicorp.common.CommonEye
-import com.pinkunicorp.watch.eyes.eyes.VampireEye
 
 
 data class EyePagerContent(
@@ -32,7 +31,12 @@ data class EyePagerContent(
  */
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Library(onBackClick: () -> Unit) {
+fun Library(
+    onBackClick: () -> Unit,
+    allEyes: List<CommonEye>,
+    currentEye: CommonEye,
+    onSelectNewEye: (newEye: CommonEye) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -44,10 +48,7 @@ fun Library(onBackClick: () -> Unit) {
                 }
             }
         )
-        val items = listOf(
-            EyePagerContent(BlackEye()),
-            EyePagerContent(VampireEye()),
-        )
+        val items = allEyes.sortedByDescending { it == currentEye }.map { EyePagerContent(it) }
         val pagerState = rememberPagerState()
 
         HorizontalPager(
@@ -72,22 +73,26 @@ fun Library(onBackClick: () -> Unit) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    onClick = { },
-                ) {
-                    Text(
-                        text = "Buy"
-                    )
+                if (items[currentPage].eye != currentEye) {
+                    Button(
+                        onClick = { onSelectNewEye(items[currentPage].eye) },
+                    ) {
+                        Text(
+                            text = "Select"
+                        )
+                    }
                 }
             }
         }
-        Box(modifier = Modifier.padding(bottom = 24.dp)) {
-            DotsIndicator(
-                items.size,
-                selectedIndex = pagerState.currentPage,
-                selectedColor = Color.DarkGray,
-                unSelectedColor = Color.LightGray
-            )
+        if (allEyes.size > 1) {
+            Box(modifier = Modifier.padding(bottom = 24.dp)) {
+                DotsIndicator(
+                    items.size,
+                    selectedIndex = pagerState.currentPage,
+                    selectedColor = Color.DarkGray,
+                    unSelectedColor = Color.LightGray
+                )
+            }
         }
     }
 }
@@ -133,5 +138,5 @@ fun DotsIndicator(
 @Preview
 @Composable
 fun LibraryPreview() {
-    Library({})
+    Library({}, listOf(BlackEye()), BlackEye(), {})
 }

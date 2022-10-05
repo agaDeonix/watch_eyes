@@ -5,7 +5,22 @@ import androidx.compose.runtime.Composable
 
 abstract class CommonEye {
 
+    enum class State {
+        IDLE,
+        INSANE,
+        MANUAL,
+        SPECIAL
+    }
+
+    private var _isPayed: Boolean = false
+
+    abstract fun getSupportedStates(): List<State>
+
     abstract fun getName(): String
+
+    abstract fun getStoreId(): String
+
+    fun isPayed() = _isPayed
 
     fun getCountAnimations(): Int {
         return 0
