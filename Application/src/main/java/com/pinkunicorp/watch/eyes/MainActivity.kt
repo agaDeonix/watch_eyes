@@ -15,8 +15,6 @@
  */
 package com.pinkunicorp.watch.eyes
 
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -25,23 +23,19 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.wearable.*
-import java.io.ByteArrayOutputStream
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.Wearable
+import com.pinkunicorp.watch.eyes.screen.Home
+import com.pinkunicorp.watch.eyes.screen.Library
+import com.pinkunicorp.watch.eyes.screen.Screen
+import com.pinkunicorp.watch.eyes.screen.State
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
-/**
- * Manages Wearable clients to showcase the [DataClient], [MessageClient], [CapabilityClient] and
- * [NodeClient].
- *
- * While resumed, this activity periodically sends a count through the [DataClient], and offers
- * the ability for the user to take and send a photo over the [DataClient].
- *
- * This activity also allows the user to launch the companion wear activity via the [MessageClient].
- *
- * While resumed, this activity also logs all interactions across the clients, which includes events
- * sent from this activity and from the watch(es).
- */
 class MainActivity : ComponentActivity() {
 
     private val dataClient by lazy { Wearable.getDataClient(this) }
@@ -51,23 +45,33 @@ class MainActivity : ComponentActivity() {
 
     private var sendManualPositionJob: Job? = null
 
-    private val isCameraSupported by lazy {
-        packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
-    }
-
     private val clientDataViewModel by viewModels<ClientDataViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val navController = rememberNavController()
+
             MaterialTheme {
-                MainApp(
-                    onStateClick = ::sendNewState,
-                    onStartWearableActivityClick = ::startWearableActivity,
-                    onPositionChange = ::sendManualPosition,
-                    onStartAnimation = ::sendSpec
-                )
+                NavHost(navController = navController, startDestination = Screen.Home.route) {
+                    composable(Screen.Home.route) {
+                        Home(
+                            onStateClick = ::sendNewState,
+                            onStartWearableActivityClick = ::startWearableActivity,
+                            onPositionChange = ::sendManualPosition,
+                            onStartAnimation = ::sendSpec,
+                            onShowLibraryClick = {
+                                navController.navigate(Screen.Library.route)
+                            }
+                        )
+                    }
+                    composable(Screen.Library.route) {
+                        Library(onBackClick =  {
+                            navController.navigateUp()
+                        })
+                    }
+                }
             }
         }
     }

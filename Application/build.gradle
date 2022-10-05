@@ -15,62 +15,68 @@
  */
 
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+  id 'com.android.application'
+  id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    compileSdkVersion 33
+  compileSdkVersion 33
 
-    defaultConfig {
-        // NOTE: This must be the same in the phone app and the wear app for the capabilities API
-        applicationId "com.pinkunicorp.watch.eyes"
-        versionCode 1
-        versionName "1.0"
-        minSdk 21
-        targetSdk 32
+  defaultConfig {
+    // NOTE: This must be the same in the phone app and the wear app for the capabilities API
+    applicationId "com.pinkunicorp.watch.eyes"
+    versionCode 1
+    versionName "1.0"
+    minSdk 25
+    targetSdk 32
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  }
 
-    lintOptions {
-        warningsAsErrors true
-        ignore "ObsoleteLintCustomCheck"
-    }
+  lintOptions {
+    warningsAsErrors true
+    ignore "ObsoleteLintCustomCheck"
+  }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-        coreLibraryDesugaringEnabled true
-    }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+    coreLibraryDesugaringEnabled true
+  }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
 
-    buildFeatures {
-        compose true
-    }
+  buildFeatures {
+    compose true
+  }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
-    }
+  composeOptions {
+    kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
+  }
 }
 
 dependencies {
-    coreLibraryDesugaring libs.android.desugarjdklibs
+  implementation(project(':common'))
 
-    implementation libs.kotlinx.coroutines.core
-    implementation libs.kotlinx.coroutines.android
-    implementation libs.kotlinx.coroutines.play.services
-    implementation libs.androidx.activity.compose
-    implementation libs.compose.material
-    implementation libs.compose.ui.tooling
-    implementation libs.androidx.core.ktx
-    implementation libs.androidx.fragment.ktx
-    implementation libs.androidx.lifecycle.viewmodel.compose
-    implementation libs.androidx.lifecycle.runtime.ktx
-    implementation libs.playservices.wearable
+  coreLibraryDesugaring libs.android.desugarjdklibs
 
-    wearApp projects.wearable
+  implementation libs.kotlinx.coroutines.core
+  implementation libs.kotlinx.coroutines.android
+  implementation libs.kotlinx.coroutines.play.services
+  implementation libs.androidx.activity.compose
+  implementation libs.compose.material
+  implementation libs.compose.ui.tooling
+  implementation libs.androidx.core.ktx
+  implementation libs.androidx.fragment.ktx
+  implementation libs.androidx.lifecycle.viewmodel.compose
+  implementation libs.androidx.lifecycle.runtime.ktx
+  implementation libs.playservices.wearable
+
+  def nav_version = "2.5.2"
+  implementation("androidx.navigation:navigation-compose:$nav_version")
+  implementation "com.google.accompanist:accompanist-pager:0.22.0-rc"
+
+  wearApp projects.wearable
 }

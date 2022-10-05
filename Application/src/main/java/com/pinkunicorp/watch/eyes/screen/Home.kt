@@ -1,26 +1,13 @@
-/*
- * Copyright 2021 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.pinkunicorp.watch.eyes
+package com.pinkunicorp.watch.eyes.screen
 
 import android.graphics.PointF
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -45,11 +32,12 @@ enum class State {
  * to be sent to the wearable devices.
  */
 @Composable
-fun MainApp(
+fun Home(
     onStateClick: (state: State) -> Unit,
     onStartWearableActivityClick: () -> Unit,
     onPositionChange: (x: Float, y: Float, focus: Float) -> Unit,
-    onStartAnimation: (number: Int) -> Unit
+    onStartAnimation: (number: Int) -> Unit,
+    onShowLibraryClick: () -> Unit
 ) {
     var currentState by remember {
         mutableStateOf(State.IDLE)
@@ -102,7 +90,7 @@ fun MainApp(
                 Text(text = "Spcl")
             }
         }
-        when(currentState) {
+        when (currentState) {
             State.MANUAL -> {
                 ManualController(onPositionChange)
             }
@@ -113,11 +101,36 @@ fun MainApp(
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        Button(
-            onClick = { onStartWearableActivityClick() },
-            modifier = Modifier.padding(15.dp)
-        ) {
-            Text(text = "OPEN")
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedButton(
+                onClick = { onStartWearableActivityClick() },
+                modifier = Modifier
+                    .padding(15.dp)
+                    .size(75.dp),
+                shape = CircleShape,
+                border = BorderStroke(1.dp, Color.Gray)
+            ) {
+                Text(
+                    text = "OPEN"
+                )
+            }
+            Box(modifier = Modifier
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+                .padding(end = 10.dp)) {
+                Button(
+                    onClick = { onShowLibraryClick() },
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .widthIn(20.dp)
+                        .align(Alignment.CenterEnd),
+                ) {
+                    Text(
+                        text = "other"
+                    )
+                }
+            }
         }
     }
 }
@@ -219,7 +232,8 @@ private fun ManualController(onPositionChange: (x: Float, y: Float, focus: Float
     }
     Slider(value = focusValue, onValueChange = {
         focusValue = it
-        onPositionChange(posX, posY, focusValue) })
+        onPositionChange(posX, posY, focusValue)
+    })
 }
 
 private fun getNewGoalPos(
@@ -270,11 +284,12 @@ private fun length(x1: Float, y1: Float, x2: Float, y2: Float): Double {
 
 @Preview
 @Composable
-fun MainAppPreview() {
-    MainApp(
+fun HomePreview() {
+    Home(
         onStateClick = {},
         onStartWearableActivityClick = {},
         { x, y, focus -> },
+        {},
         {}
     )
 }
