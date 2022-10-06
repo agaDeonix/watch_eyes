@@ -43,9 +43,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainApp(
-                state = clientDataViewModel.state,
-                manualPosition = clientDataViewModel.manualPosition,
-                specAnimation = clientDataViewModel.specAnimation
+                currentEye = clientDataViewModel.selectedEye
             )
         }
 

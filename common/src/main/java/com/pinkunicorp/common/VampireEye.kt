@@ -14,9 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.pinkunicorp.common.CommonEye
 
 class VampireEye : CommonEye() {
-    var state: Int = 0
-    var manualPosition: Triple<Float, Float, Float> = Triple(0f, 0f, 0.1f)
-    var specAnimation: Int? = null
 
     override fun getName() = "Vampire EYE"
 

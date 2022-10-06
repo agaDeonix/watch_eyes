@@ -34,19 +34,13 @@ import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Typography
 import com.pinkunicorp.common.BlackEye
-
-val currentEye: BlackEye = BlackEye()
+import com.pinkunicorp.common.CommonEye
 
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun MainApp(
-    state: Int,
-    manualPosition: Triple<Float, Float, Float>,
-    specAnimation: Int?,
+    currentEye: CommonEye,
 ) {
-    currentEye.state = state
-    currentEye.manualPosition = manualPosition
-    currentEye.specAnimation = specAnimation
     WearAppTheme {
         Column(
             modifier = Modifier
@@ -85,7 +79,7 @@ fun DefaultPreview() {
                 .selectableGroup(),
             verticalArrangement = Arrangement.Center
         ) {
-            currentEye.drawPreview()
+            BlackEye().drawPreview()
         }
     }
 }

@@ -35,7 +35,7 @@ fun Library(
     onBackClick: () -> Unit,
     allEyes: List<CommonEye>,
     currentEye: CommonEye,
-    onSelectNewEye: (newEye: CommonEye) -> Unit
+    onSelectNewEye: (newEye: CommonEye, pos: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -75,7 +75,7 @@ fun Library(
                 Spacer(modifier = Modifier.weight(1f))
                 if (items[currentPage].eye != currentEye) {
                     Button(
-                        onClick = { onSelectNewEye(items[currentPage].eye) },
+                        onClick = { onSelectNewEye(items[currentPage].eye, allEyes.indexOf(items[currentPage].eye)) },
                     ) {
                         Text(
                             text = "Select"
@@ -138,5 +138,5 @@ fun DotsIndicator(
 @Preview
 @Composable
 fun LibraryPreview() {
-    Library({}, listOf(BlackEye()), BlackEye(), {})
+    Library({}, listOf(BlackEye()), BlackEye(), {newEye, pos ->  })
 }

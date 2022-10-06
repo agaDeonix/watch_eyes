@@ -12,6 +12,10 @@ abstract class CommonEye {
         SPECIAL
     }
 
+    var state: Int = 0
+    var manualPosition: Triple<Float, Float, Float> = Triple(0f, 0f, 0.1f)
+    var specAnimation: Int? = null
+
     private var _isPayed: Boolean = false
 
     abstract fun getSupportedStates(): List<State>

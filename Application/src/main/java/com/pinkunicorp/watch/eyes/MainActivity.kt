@@ -73,8 +73,9 @@ class MainActivity : ComponentActivity() {
                         },
                             allEyes = clientDataViewModel.allEyes,
                             currentEye = clientDataViewModel.currentEye,
-                            onSelectNewEye = {
-                                clientDataViewModel.currentEye = it
+                            onSelectNewEye = { eye, pos ->
+                                clientDataViewModel.currentEye = eye
+                                sendSelectedEye(pos)
                                 navController.navigateUp()
                             }
                         )
@@ -144,6 +145,26 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun sendSelectedEye(selectedEyePos: Int) {
+        lifecycleScope.launch {
+            try {
+                val request = PutDataMapRequest.create(SELECTED_EYE_PATH).apply {
+                    dataMap.putInt(SELECTED_EYE_KEY, selectedEyePos)
+                }
+                    .asPutDataRequest()
+                    .setUrgent()
+
+                val result = dataClient.putDataItem(request).await()
+
+                Log.d(TAG, "DataItem saved: $result")
+            } catch (cancellationException: CancellationException) {
+                throw cancellationException
+            } catch (exception: Exception) {
+                Log.d(TAG, "Saving DataItem failed: $exception")
+            }
+        }
+    }
+
     private fun sendManualPosition(x: Float, y: Float, focus: Float) {
         sendManualPositionJob?.cancel()
         sendManualPositionJob = lifecycleScope.launch {
@@ -197,5 +218,8 @@ class MainActivity : ComponentActivity() {
 
         private const val SPEC_PATH = "/spec"
         private const val SPEC_KEY = "spec"
+
+        private const val SELECTED_EYE_PATH = "/selected-eye"
+        private const val SELECTED_EYE_KEY = "selected-eye"
     }
 }

@@ -95,5 +95,8 @@ class DataLayerListenerService : WearableListenerService() {
 
         const val SPEC_PATH = "/spec"
         const val SPEC_KEY = "spec"
+
+        const val SELECTED_EYE_PATH = "/selected-eye"
+        const val SELECTED_EYE_KEY = "selected-eye"
     }
 }

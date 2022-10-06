@@ -1,6 +1,7 @@
 package com.pinkunicorp.common
 
 import android.graphics.PointF
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
@@ -20,10 +21,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BlackEye : CommonEye() {
-
-    var state: Int = 0
-    var manualPosition: Triple<Float, Float, Float> = Triple(0f, 0f, 0.1f)
-    var specAnimation: Int? = null
 
     override fun getName() = "Black EYE"
 
@@ -51,9 +48,7 @@ class BlackEye : CommonEye() {
                 2 -> 100L
                 else -> 1000L
             }
-            val x = manualPosition.first
-            val y = manualPosition.second
-            val manualFocus = manualPosition.third
+
             while (state == 0 || state == 1) {
                 launch {
                     val a = async {
@@ -78,8 +73,11 @@ class BlackEye : CommonEye() {
                 }
                 delay(duration)
             }
-            if (state == 2) {
-//            Log.e("WEAR", "Launch X:$x Y:$y")
+            while (state == 2) {
+                val x = manualPosition.first
+                val y = manualPosition.second
+                val manualFocus = manualPosition.third
+                Log.e("WEAR", "Launch X:$x Y:$y")
                 launch {
                     val a = async {
                         offsetX.animateTo(
@@ -101,6 +99,7 @@ class BlackEye : CommonEye() {
                     }
                     awaitAll(a, b, c)
                 }
+                delay(duration)
             }
             while (state == 3) {
                 when (specAnimation) {
@@ -326,7 +325,6 @@ class BlackEye : CommonEye() {
                             )
                         }
                         delay(duration)
-                        break
                     }
                 }
             }

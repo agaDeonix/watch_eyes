@@ -22,6 +22,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import com.google.android.gms.wearable.*
+import com.pinkunicorp.common.BlackEye
+import com.pinkunicorp.common.CommonEye
+import com.pinkunicorp.watch.eyes.eyes.VampireEye
 
 class ClientDataViewModel(
     application: Application
@@ -40,6 +43,11 @@ class ClientDataViewModel(
     var specAnimation by mutableStateOf<Int?>(null)
         private set
 
+    private val allEyes = listOf(BlackEye(), VampireEye())
+
+    var selectedEye by mutableStateOf(allEyes.first())
+        private set
+
     override fun onDataChanged(dataEvents: DataEventBuffer) {
 
         // Do additional work for specific events
@@ -51,6 +59,7 @@ class ClientDataViewModel(
                             state = DataMapItem.fromDataItem(dataEvent.dataItem)
                                 .dataMap
                                 .getInt(DataLayerListenerService.STATE_KEY)
+                            selectedEye.state = state
                         }
                         DataLayerListenerService.MANUAL_POSITION_PATH -> {
                             manualPosition = DataMapItem.fromDataItem(dataEvent.dataItem)
@@ -59,11 +68,20 @@ class ClientDataViewModel(
                                     val items = it.split(";").map { it.toFloat() }
                                     Triple(items[0], items[1], items[2])
                                 }
+                            selectedEye.manualPosition = manualPosition
                         }
                         DataLayerListenerService.SPEC_PATH -> {
                             specAnimation = DataMapItem.fromDataItem(dataEvent.dataItem)
                                 .dataMap
                                 .getInt(DataLayerListenerService.SPEC_KEY)
+                            selectedEye.specAnimation = specAnimation
+                        }
+                        DataLayerListenerService.SELECTED_EYE_PATH -> {
+                            selectedEye = DataMapItem.fromDataItem(dataEvent.dataItem)
+                                .dataMap
+                                .getInt(DataLayerListenerService.SELECTED_EYE_KEY).let {
+                                    allEyes.get(it)
+                                }
                         }
                     }
                 }
