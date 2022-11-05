@@ -37,7 +37,7 @@ class ClientDataViewModel(
     var state by mutableStateOf<Int>(0)
         private set
 
-    var manualPosition by mutableStateOf(Triple(0f, 0f, 0.2f))
+    var manualPosition by mutableStateOf(Pair(0f, 0f))
         private set
 
     var specAnimation by mutableStateOf<Int?>(null)
@@ -66,7 +66,7 @@ class ClientDataViewModel(
                                 .dataMap
                                 .getString(DataLayerListenerService.MANUAL_POSITION_KEY).let {
                                     val items = it.split(";").map { it.toFloat() }
-                                    Triple(items[0], items[1], items[2])
+                                    Pair(items[0], items[1])
                                 }
                             selectedEye.manualPosition = manualPosition
                         }

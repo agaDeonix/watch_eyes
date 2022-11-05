@@ -12,8 +12,13 @@ abstract class CommonEye {
         SPECIAL
     }
 
+    data class EyeState(
+        val mode: Int = 0,
+        val data: Map<String, Any> = emptyMap()
+    )
+
     var state: Int = 0
-    var manualPosition: Triple<Float, Float, Float> = Triple(0f, 0f, 0.1f)
+    var manualPosition: Pair<Float, Float> = Pair(0f, 0f)
     var specAnimation: Int? = null
 
     private var _isPayed: Boolean = false
