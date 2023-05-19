@@ -43,7 +43,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainApp(
-                currentEye = clientDataViewModel.selectedEye
+                currentEye = clientDataViewModel.selectedEye,
+                state = clientDataViewModel.state
             )
         }
 

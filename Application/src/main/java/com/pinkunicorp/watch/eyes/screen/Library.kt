@@ -2,6 +2,7 @@ package com.pinkunicorp.watch.eyes.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -9,16 +10,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.pinkunicorp.common.BlackEye
-import com.pinkunicorp.common.CommonEye
+import com.pinkunicorp.common.eyes.BlackEye
+import com.pinkunicorp.common.eyes.CommonEye
+import com.pinkunicorp.common.mode.BaseMode
+import com.pinkunicorp.watch.eyes.R
 
 
 data class EyePagerContent(
@@ -38,7 +43,7 @@ fun Library(
     onSelectNewEye: (newEye: CommonEye, pos: Int) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopAppBar(
@@ -62,19 +67,32 @@ fun Library(
                     .padding(16.dp)
             ) {
                 Text(
+                    modifier = Modifier.align(CenterHorizontally),
                     text = items[currentPage].eye.getName(),
                     style = MaterialTheme.typography.h4
                 )
                 Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                     Spacer(modifier = Modifier.weight(1f))
-                    Box(modifier = Modifier.size(200.dp)) {
+                    Box(modifier = Modifier.size(150.dp)) {
                         items[currentPage].eye.drawPreview()
                     }
                     Spacer(modifier = Modifier.weight(1f))
                 }
+                Text(
+                    text = stringResource(id = R.string.library_title_modes),
+                    style = MaterialTheme.typography.h5
+                )
+                LazyColumn {
+                    items[currentPage].eye.modes.forEach { mode ->
+                        item {
+                            ModeDescription(mode = mode)
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 if (items[currentPage].eye != currentEye) {
                     Button(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
                         onClick = { onSelectNewEye(items[currentPage].eye, allEyes.indexOf(items[currentPage].eye)) },
                     ) {
                         Text(
@@ -95,6 +113,17 @@ fun Library(
             }
         }
     }
+}
+
+@Composable
+fun ModeDescription(modifier: Modifier = Modifier, mode: BaseMode) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = mode.name,
+            style = MaterialTheme.typography.h5
+        )
+    }
+
 }
 
 @Composable
@@ -138,5 +167,5 @@ fun DotsIndicator(
 @Preview
 @Composable
 fun LibraryPreview() {
-    Library({}, listOf(BlackEye()), BlackEye(), {newEye, pos ->  })
+    Library({}, listOf(BlackEye()), BlackEye(), { newEye, pos ->  })
 }

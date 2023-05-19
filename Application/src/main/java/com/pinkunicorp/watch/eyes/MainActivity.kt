@@ -27,9 +27,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.DataMap
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
-import com.pinkunicorp.common.CommonEye
+import com.pinkunicorp.common.eyes.CommonEye
+import com.pinkunicorp.common.extensions.toBundle
 import com.pinkunicorp.watch.eyes.screen.Home
 import com.pinkunicorp.watch.eyes.screen.Library
 import com.pinkunicorp.watch.eyes.screen.Screen
@@ -43,7 +45,7 @@ class MainActivity : ComponentActivity() {
     private val capabilityClient by lazy { Wearable.getCapabilityClient(this) }
     private val nodeClient by lazy { Wearable.getNodeClient(this) }
 
-    private var sendManualPositionJob: Job? = null
+//    private var sendManualPositionJob: Job? = null
 
     private val clientDataViewModel by viewModels<ClientDataViewModel>()
 
@@ -57,10 +59,8 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = Screen.Home.route) {
                     composable(Screen.Home.route) {
                         Home(
-                            onStateClick = ::sendNewState,
+                            onStateChanged = ::sendNewState,
                             onStartWearableActivityClick = ::startWearableActivity,
-                            onPositionChange = ::sendManualPosition,
-                            onStartAnimation = ::sendSpec,
                             onShowLibraryClick = {
                                 navController.navigate(Screen.Library.route)
                             },
@@ -125,11 +125,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun sendNewState(state: CommonEye.State) {
+    private fun sendNewState(state: CommonEye.EyeState) {
         lifecycleScope.launch {
             try {
                 val request = PutDataMapRequest.create(STATE_PATH).apply {
-                    dataMap.putInt(STATE_KEY, state.ordinal)
+                    dataMap.putInt(STATE_MODE_KEY, state.mode.ordinal)
+                    state.data?.toBundle()?.let {
+                        DataMap.fromBundle(it)
+                    }?.let {
+                        dataMap.putDataMap(STATE_DATA_KEY, it)
+                    }
                 }
                     .asPutDataRequest()
                     .setUrgent()
@@ -165,59 +170,35 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun sendManualPosition(x: Float, y: Float, focus: Float) {
-        sendManualPositionJob?.cancel()
-        sendManualPositionJob = lifecycleScope.launch {
-            delay(100)
-            try {
-                val request = PutDataMapRequest.create(MANUAL_POSITION_PATH).apply {
-                    dataMap.putString(MANUAL_POSITION_KEY, "$x;$y;$focus")
-                }
-                    .asPutDataRequest()
-                    .setUrgent()
-
-                val result = dataClient.putDataItem(request).await()
-
-                Log.d(TAG, "DataItem saved: $result")
-            } catch (cancellationException: CancellationException) {
-                throw cancellationException
-            } catch (exception: Exception) {
-                Log.d(TAG, "Saving DataItem failed: $exception")
-            }
-        }
-    }
-
-    private fun sendSpec(animation: Int) {
-        lifecycleScope.launch {
-            try {
-                val request = PutDataMapRequest.create(SPEC_PATH).apply {
-                    dataMap.putInt(SPEC_KEY, animation)
-                }
-                    .asPutDataRequest()
-                    .setUrgent()
-
-                val result = dataClient.putDataItem(request).await()
-
-                Log.d(TAG, "DataItem saved: $result")
-            } catch (cancellationException: CancellationException) {
-                throw cancellationException
-            } catch (exception: Exception) {
-                Log.d(TAG, "Saving DataItem failed: $exception")
-            }
-        }
-    }
+//    private fun sendManualPosition(x: Float, y: Float, focus: Float) {
+//        sendManualPositionJob?.cancel()
+//        sendManualPositionJob = lifecycleScope.launch {
+//            delay(100)
+//            try {
+//                val request = PutDataMapRequest.create(MANUAL_POSITION_PATH).apply {
+//                    dataMap.putString(MANUAL_POSITION_KEY, "$x;$y;$focus")
+//                }
+//                    .asPutDataRequest()
+//                    .setUrgent()
+//
+//                val result = dataClient.putDataItem(request).await()
+//
+//                Log.d(TAG, "DataItem saved: $result")
+//            } catch (cancellationException: CancellationException) {
+//                throw cancellationException
+//            } catch (exception: Exception) {
+//                Log.d(TAG, "Saving DataItem failed: $exception")
+//            }
+//        }
+//    }
 
     companion object {
         private const val TAG = "MainActivity"
 
         private const val START_ACTIVITY_PATH = "/start-activity"
         private const val STATE_PATH = "/state"
-        private const val STATE_KEY = "state"
-        private const val MANUAL_POSITION_PATH = "/manual-position"
-        private const val MANUAL_POSITION_KEY = "manual-position"
-
-        private const val SPEC_PATH = "/spec"
-        private const val SPEC_KEY = "spec"
+        private const val STATE_MODE_KEY = "mode"
+        private const val STATE_DATA_KEY = "data"
 
         private const val SELECTED_EYE_PATH = "/selected-eye"
         private const val SELECTED_EYE_KEY = "selected-eye"

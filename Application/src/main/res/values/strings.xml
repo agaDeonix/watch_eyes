@@ -25,4 +25,5 @@
     <string name="data_item_unknown">Unknown DataItem type</string>
     <string name="message_from_watch">Message from watch</string>
     <string name="capability_changed">Capability changed</string>
+    <string name="library_title_modes">Modes</string>
 </resources>

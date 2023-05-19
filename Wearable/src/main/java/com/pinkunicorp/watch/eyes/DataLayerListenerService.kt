@@ -88,13 +88,8 @@ class DataLayerListenerService : WearableListenerService() {
         private const val START_ACTIVITY_PATH = "/start-activity"
         private const val DATA_ITEM_RECEIVED_PATH = "/data-item-received"
         const val STATE_PATH = "/state"
-        const val STATE_KEY = "state"
-
-        const val MANUAL_POSITION_PATH = "/manual-position"
-        const val MANUAL_POSITION_KEY = "manual-position"
-
-        const val SPEC_PATH = "/spec"
-        const val SPEC_KEY = "spec"
+        const val STATE_MODE_KEY = "mode"
+        const val STATE_DATA_KEY = "data"
 
         const val SELECTED_EYE_PATH = "/selected-eye"
         const val SELECTED_EYE_KEY = "selected-eye"

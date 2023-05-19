@@ -33,13 +33,14 @@ import androidx.wear.compose.material.Colors
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Typography
-import com.pinkunicorp.common.BlackEye
-import com.pinkunicorp.common.CommonEye
+import com.pinkunicorp.common.eyes.BlackEye
+import com.pinkunicorp.common.eyes.CommonEye
 
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun MainApp(
     currentEye: CommonEye,
+    state: CommonEye.EyeState
 ) {
     WearAppTheme {
         Column(
@@ -49,6 +50,7 @@ fun MainApp(
                 .selectableGroup(),
             verticalArrangement = Arrangement.Center
         ) {
+            currentEye.state = state
             currentEye.draw()
         }
     }

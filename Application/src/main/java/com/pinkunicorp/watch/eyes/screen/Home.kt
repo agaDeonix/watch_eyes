@@ -18,8 +18,8 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pinkunicorp.common.BlackEye
-import com.pinkunicorp.common.CommonEye
+import com.pinkunicorp.common.eyes.BlackEye
+import com.pinkunicorp.common.eyes.CommonEye
 
 /**
  * The UI affording the actions the user can take, along with a list of the events and the image
@@ -27,10 +27,8 @@ import com.pinkunicorp.common.CommonEye
  */
 @Composable
 fun Home(
-    onStateClick: (state: CommonEye.State) -> Unit,
+    onStateChanged: (state: CommonEye.EyeState) -> Unit,
     onStartWearableActivityClick: () -> Unit,
-    onPositionChange: (x: Float, y: Float, focus: Float) -> Unit,
-    onStartAnimation: (number: Int) -> Unit,
     onShowLibraryClick: () -> Unit,
     currentEye: CommonEye
 ) {
@@ -48,7 +46,7 @@ fun Home(
                 Button(
                     onClick = {
                         currentState = it
-                        onStateClick(it)
+                        onStateChanged(CommonEye.EyeState(mode = it))
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == it) Color.Blue else Color.Gray),
                     modifier = Modifier.padding(15.dp)
@@ -59,10 +57,10 @@ fun Home(
         }
         when (currentState) {
             CommonEye.State.MANUAL -> {
-                ManualController(onPositionChange)
+                ManualController(onStateChanged)
             }
             CommonEye.State.SPECIAL -> {
-                SpecialController(onStartAnimation)
+                SpecialController(onStateChanged)
             }
             else -> {
             }
@@ -117,26 +115,43 @@ fun StateName(state: CommonEye.State) {
 }
 
 @Composable
-private fun SpecialController(onStartAnimation: (number: Int) -> Unit) {
+private fun SpecialController(onStartAnimation: (state: CommonEye.EyeState) -> Unit) {
     Column {
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = "Animations"
         )
         Button(
-            onClick = { onStartAnimation(0) },
+            onClick = {
+                onStartAnimation(
+                    CommonEye.EyeState(
+                        mode = CommonEye.State.SPECIAL,
+                        data = mapOf("animation" to 0)
+                    )
+                )
+            },
             modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
         ) {
             Text(text = "Animation 1")
         }
         Button(
-            onClick = { onStartAnimation(1) },
+            onClick = { onStartAnimation(
+                CommonEye.EyeState(
+                    mode = CommonEye.State.SPECIAL,
+                    data = mapOf("animation" to 1)
+                )
+            ) },
             modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
         ) {
             Text(text = "Animation 2")
         }
         Button(
-            onClick = { onStartAnimation(2) },
+            onClick = { onStartAnimation(
+                CommonEye.EyeState(
+                    mode = CommonEye.State.SPECIAL,
+                    data = mapOf("animation" to 2)
+                )
+            ) },
             modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
         ) {
             Text(text = "Animation 3")
@@ -145,7 +160,7 @@ private fun SpecialController(onStartAnimation: (number: Int) -> Unit) {
 }
 
 @Composable
-private fun ManualController(onPositionChange: (x: Float, y: Float, focus: Float) -> Unit) {
+private fun ManualController(onPositionChange: (state: CommonEye.EyeState) -> Unit) {
     var goalPosX by remember {
         mutableStateOf(0f)
     }
@@ -192,7 +207,12 @@ private fun ManualController(onPositionChange: (x: Float, y: Float, focus: Float
                 posX = goalPosX / (radius - goalRadius)
                 posY = goalPosY / (radius - goalRadius)
                 Log.e("APP", "X: $posX Y: $posY Focus: $focusValue")
-                onPositionChange(posX, posY, focusValue)
+                onPositionChange(
+                    CommonEye.EyeState(
+                        mode = CommonEye.State.MANUAL,
+                        data = mapOf("targetX" to posX, "targetY" to posY)
+                    )
+                )
 
                 drawCircle(
                     center = Offset(x = centerX, y = centerY),
@@ -213,7 +233,7 @@ private fun ManualController(onPositionChange: (x: Float, y: Float, focus: Float
     }
     Slider(value = focusValue, onValueChange = {
         focusValue = it
-        onPositionChange(posX, posY, focusValue)
+//        onPositionChange(posX, posY, focusValue)//FIXME need rework
     })
 }
 
@@ -267,10 +287,8 @@ private fun length(x1: Float, y1: Float, x2: Float, y2: Float): Double {
 @Composable
 fun HomePreview() {
     Home(
-        onStateClick = {},
+        onStateChanged = {},
         onStartWearableActivityClick = {},
-        { x, y, focus -> },
-        {},
         {},
         BlackEye()
     )

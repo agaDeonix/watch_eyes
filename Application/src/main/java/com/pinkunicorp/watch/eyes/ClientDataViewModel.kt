@@ -17,9 +17,9 @@ package com.pinkunicorp.watch.eyes
 
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.wearable.*
-import com.pinkunicorp.common.BlackEye
-import com.pinkunicorp.common.CommonEye
-import com.pinkunicorp.watch.eyes.eyes.VampireEye
+import com.pinkunicorp.common.eyes.BlackEye
+import com.pinkunicorp.common.eyes.CommonEye
+import com.pinkunicorp.common.eyes.VampireEye
 
 /**
  * A state holder for the client data.

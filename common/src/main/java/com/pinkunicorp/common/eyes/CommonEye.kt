@@ -1,7 +1,8 @@
-package com.pinkunicorp.common
+package com.pinkunicorp.common.eyes
 
 import android.graphics.PointF
 import androidx.compose.runtime.Composable
+import com.pinkunicorp.common.mode.BaseMode
 
 abstract class CommonEye {
 
@@ -13,13 +14,11 @@ abstract class CommonEye {
     }
 
     data class EyeState(
-        val mode: Int = 0,
-        val data: Map<String, Any> = emptyMap()
+        val mode: State = State.IDLE,
+        val data: Map<String, Any?>? = emptyMap()
     )
 
-    var state: Int = 0
-    var manualPosition: Pair<Float, Float> = Pair(0f, 0f)
-    var specAnimation: Int? = null
+    var state: EyeState = EyeState()
 
     private var _isPayed: Boolean = false
 
@@ -28,6 +27,8 @@ abstract class CommonEye {
     abstract fun getName(): String
 
     abstract fun getStoreId(): String
+
+    abstract val modes: List<BaseMode>
 
     fun isPayed() = _isPayed
 

@@ -14,58 +14,22 @@ class VerticalMoveAnimation(
 
     private var duration = 1000L
 
-//    @Composable
-//    override fun action() {
-//        super.action()
-//        LaunchedEffect(true) {
-//            while (true) {
-//                val a = async {
-//                    offsetX.animateTo(
-//                        0f,
-//                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
-//                    )
-//                }
-//                val b = async {
-//                    offsetY.animateTo(
-//                        1f,
-//                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
-//                    )
-//                }
-//                awaitAll(a, b)
-//                delay(duration)
-//                val a1 = async {
-//                    offsetX.animateTo(
-//                        0f,
-//                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
-//                    )
-//                }
-//                val b1 = async {
-//                    offsetY.animateTo(
-//                        -1f,
-//                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
-//                    )
-//                }
-//                awaitAll(a1, b1)
-//                delay(duration)
-//            }
-//        }
-//    }
-
     override suspend fun makeMove(coroutineScope: CoroutineScope) {
-        coroutineScope.launch {
-            val a = async {
-                offsetX.animateTo(
-                    0f,
-                    animationSpec = tween(duration.toInt(), easing = EaseInOut)
-                )
-            }
-            val b = async {
-                offsetY.animateTo(
-                    1f,
-                    animationSpec = tween(duration.toInt(), easing = EaseInOut)
-                )
-            }
-            val c = async {
+        while (true) {
+            coroutineScope.launch {
+                val a = async {
+                    offsetX.animateTo(
+                        0f,
+                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                    )
+                }
+                val b = async {
+                    offsetY.animateTo(
+                        1f,
+                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                    )
+                }
+                val c = async {
 //                focus.animateTo(
 //                    (Random.nextInt(50) + 20) / 100f,
 //                    animationSpec = tween(
@@ -73,24 +37,24 @@ class VerticalMoveAnimation(
 //                        easing = EaseInOut
 //                    )
 //                )
+                }
+                awaitAll(a, b, c)
             }
-            awaitAll(a, b, c)
-        }
-        delay(duration)
-        coroutineScope.launch {
-            val a = async {
-                offsetX.animateTo(
-                    0f,
-                    animationSpec = tween(duration.toInt(), easing = EaseInOut)
-                )
-            }
-            val b = async {
-                offsetY.animateTo(
-                    -1f,
-                    animationSpec = tween(duration.toInt(), easing = EaseInOut)
-                )
-            }
-            val c = async {
+            delay(duration)
+            coroutineScope.launch {
+                val a = async {
+                    offsetX.animateTo(
+                        0f,
+                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                    )
+                }
+                val b = async {
+                    offsetY.animateTo(
+                        -1f,
+                        animationSpec = tween(duration.toInt(), easing = EaseInOut)
+                    )
+                }
+                val c = async {
 //                focus.animateTo(
 //                    (Random.nextInt(50) + 20) / 100f,
 //                    animationSpec = tween(
@@ -98,9 +62,10 @@ class VerticalMoveAnimation(
 //                        easing = EaseInOut
 //                    )
 //                )
+                }
+                awaitAll(a, b, c)
             }
-            awaitAll(a, b, c)
+            delay(duration)
         }
-        delay(duration)
     }
 }

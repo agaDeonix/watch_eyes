@@ -16,15 +16,15 @@
 package com.pinkunicorp.watch.eyes
 
 import android.app.Application
-import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import com.google.android.gms.wearable.*
-import com.pinkunicorp.common.BlackEye
-import com.pinkunicorp.common.CommonEye
-import com.pinkunicorp.watch.eyes.eyes.VampireEye
+import com.pinkunicorp.common.eyes.BlackEye
+import com.pinkunicorp.common.eyes.CommonEye
+import com.pinkunicorp.common.extensions.toMap
+import com.pinkunicorp.common.eyes.VampireEye
 
 class ClientDataViewModel(
     application: Application
@@ -34,13 +34,7 @@ class ClientDataViewModel(
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
 
-    var state by mutableStateOf<Int>(0)
-        private set
-
-    var manualPosition by mutableStateOf(Pair(0f, 0f))
-        private set
-
-    var specAnimation by mutableStateOf<Int?>(null)
+    var state by mutableStateOf(CommonEye.EyeState())
         private set
 
     private val allEyes = listOf(BlackEye(), VampireEye())
@@ -56,31 +50,23 @@ class ClientDataViewModel(
                 DataEvent.TYPE_CHANGED -> {
                     when (dataEvent.dataItem.uri.path) {
                         DataLayerListenerService.STATE_PATH -> {
-                            state = DataMapItem.fromDataItem(dataEvent.dataItem)
+                            val mode = DataMapItem.fromDataItem(dataEvent.dataItem)
                                 .dataMap
-                                .getInt(DataLayerListenerService.STATE_KEY)
-                            selectedEye.state = state
-                        }
-                        DataLayerListenerService.MANUAL_POSITION_PATH -> {
-                            manualPosition = DataMapItem.fromDataItem(dataEvent.dataItem)
+                                .getInt(DataLayerListenerService.STATE_MODE_KEY)
+                            val data = DataMapItem.fromDataItem(dataEvent.dataItem)
                                 .dataMap
-                                .getString(DataLayerListenerService.MANUAL_POSITION_KEY).let {
-                                    val items = it.split(";").map { it.toFloat() }
-                                    Pair(items[0], items[1])
-                                }
-                            selectedEye.manualPosition = manualPosition
-                        }
-                        DataLayerListenerService.SPEC_PATH -> {
-                            specAnimation = DataMapItem.fromDataItem(dataEvent.dataItem)
-                                .dataMap
-                                .getInt(DataLayerListenerService.SPEC_KEY)
-                            selectedEye.specAnimation = specAnimation
+                                .getDataMap(DataLayerListenerService.STATE_DATA_KEY)?.toBundle()
+                                ?.toMap()
+                            state = state.copy(
+                                mode = CommonEye.State.values()[mode],
+                                data = data
+                            )
                         }
                         DataLayerListenerService.SELECTED_EYE_PATH -> {
                             selectedEye = DataMapItem.fromDataItem(dataEvent.dataItem)
                                 .dataMap
                                 .getInt(DataLayerListenerService.SELECTED_EYE_KEY).let {
-                                    allEyes.get(it)
+                                    allEyes[it]
                                 }
                         }
                     }
