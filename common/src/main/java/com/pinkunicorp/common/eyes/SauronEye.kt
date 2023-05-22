@@ -1,4 +1,3 @@
-package com.pinkunicorp.common.eyes;
+package com.pinkunicorp.common.eyes
 
-public class SauronEye {
-}
+class SauronEye
