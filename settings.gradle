@@ -17,5 +17,6 @@ dependencyResolutionManagement {
     }
 }
 
-include ':mobile', ':wear'
+include ':mobile'
+include ':wear'
 include ':common'

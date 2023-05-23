@@ -1,4 +1,4 @@
-package com.pinkunicorp.watch.eyes.screen
+package com.pinkunicorp.watch_eyes.screen
 
 import android.graphics.PointF
 import android.util.Log

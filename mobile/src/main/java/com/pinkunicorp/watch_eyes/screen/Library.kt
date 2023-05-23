@@ -1,4 +1,4 @@
-package com.pinkunicorp.watch.eyes.screen
+package com.pinkunicorp.watch_eyes.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,7 +23,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.pinkunicorp.common.eyes.BlackEye
 import com.pinkunicorp.common.eyes.CommonEye
 import com.pinkunicorp.common.mode.BaseMode
-import com.pinkunicorp.watch.eyes.R
+import com.pinkunicorp.watch_eyes.R
 
 
 data class EyePagerContent(

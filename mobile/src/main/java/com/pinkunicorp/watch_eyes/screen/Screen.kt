@@ -1,4 +1,4 @@
-package com.pinkunicorp.watch.eyes.screen
+package com.pinkunicorp.watch_eyes.screen
 
 sealed class Screen(val route: String) {
     object Home: Screen("home")

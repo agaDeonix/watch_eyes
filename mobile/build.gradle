@@ -20,12 +20,12 @@ plugins {
 }
 
 android {
-  namespace "com.pinkunicorp.watch.eyes"
+  namespace "com.pinkunicorp.watch_eyes"
   compileSdkVersion 33
 
   defaultConfig {
     // NOTE: This must be the same in the phone app and the wear app for the capabilities API
-    applicationId "com.pinkunicorp.watch.eyes"
+    applicationId "com.pinkunicorp.watch_eyes"
     versionCode 1
     versionName "1.0"
     minSdk 25

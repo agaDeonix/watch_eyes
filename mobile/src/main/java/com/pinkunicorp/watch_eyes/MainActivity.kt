@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pinkunicorp.watch.eyes
+package com.pinkunicorp.watch_eyes
 
 import android.net.Uri
 import android.os.Bundle
@@ -32,9 +32,9 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.pinkunicorp.common.eyes.CommonEye
 import com.pinkunicorp.common.extensions.toBundle
-import com.pinkunicorp.watch.eyes.screen.Home
-import com.pinkunicorp.watch.eyes.screen.Library
-import com.pinkunicorp.watch.eyes.screen.Screen
+import com.pinkunicorp.watch_eyes.screen.Home
+import com.pinkunicorp.watch_eyes.screen.Library
+import com.pinkunicorp.watch_eyes.screen.Screen
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 

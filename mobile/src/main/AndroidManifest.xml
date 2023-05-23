@@ -15,7 +15,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pinkunicorp.watch.eyes">
+    package="com.pinkunicorp.watch_eyes">
 
     <uses-feature
         android:name="android.hardware.camera"

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.pinkunicorp.watch.eyes
+package com.pinkunicorp.watch_eyes
 
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.wearable.*
