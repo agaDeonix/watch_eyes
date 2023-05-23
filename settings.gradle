@@ -17,5 +17,5 @@ dependencyResolutionManagement {
     }
 }
 
-include ':Application', ':Wearable'
+include ':mobile', ':wear'
 include ':common'
