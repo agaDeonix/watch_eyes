@@ -20,6 +20,7 @@ plugins {
 }
 
 android {
+  namespace "com.pinkunicorp.watch.eyes"
   compileSdkVersion 33
 
   defaultConfig {
