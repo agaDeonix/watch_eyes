@@ -40,7 +40,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 }
 
@@ -56,19 +56,19 @@ dependencies {
         }
     }
 
-    coreLibraryDesugaring(libs.android.desugarjdklibs)
+    coreLibraryDesugaring(Deps.androidDesugarjdklibs)
 
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.play.services)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.compose.material)
-    implementation(libs.compose.ui.tooling)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.playservices.wearable)
+    implementation(Deps.kotlinxCoroutinesCore)
+    implementation(Deps.kotlinxCoroutinesAndroid)
+    implementation(Deps.kotlinxCoroutinesPlayServices)
+    implementation(Deps.androidxActivityCompose)
+    implementation(Deps.composeMaterial)
+    implementation(Deps.composeUiTooling)
+    implementation(Deps.androidxCoreKtx)
+    implementation(Deps.androidxFragmentKtx)
+    implementation(Deps.androidxLifecycleViewmodelCompose)
+    implementation(Deps.androidxLifecycleRuntimeKtx)
+    implementation(Deps.playservicesWearable)
 
     val navVersion = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$navVersion")

@@ -39,7 +39,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 }
 
@@ -51,12 +51,12 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.4.3")
     implementation("androidx.compose.animation:animation-core:1.4.3")
 
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.compose.ui.tooling)
-    implementation(libs.compose.foundation)
-    implementation(libs.wear.compose.material)
-    implementation(libs.wear.compose.foundation)
+    implementation(Deps.kotlinxCoroutinesCore)
+    implementation(Deps.kotlinxCoroutinesAndroid)
+    implementation(Deps.composeUiTooling)
+    implementation(Deps.composeFoundation)
+    implementation(Deps.wearComposeMaterial)
+    implementation(Deps.wearComposeFoundation)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

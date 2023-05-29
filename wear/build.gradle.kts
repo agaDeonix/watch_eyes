@@ -65,21 +65,21 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
 }
 
 dependencies {
     implementation(project(":common"))
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.play.services)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.compose.ui.tooling)
-    implementation(libs.compose.foundation)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.wear.compose.material)
-    implementation(libs.wear.compose.foundation)
-    implementation(libs.playservices.wearable)
+    implementation(Deps.kotlinxCoroutinesCore)
+    implementation(Deps.kotlinxCoroutinesAndroid)
+    implementation(Deps.kotlinxCoroutinesPlayServices)
+    implementation(Deps.androidxActivityCompose)
+    implementation(Deps.composeUiTooling)
+    implementation(Deps.composeFoundation)
+    implementation(Deps.androidxLifecycleViewmodelCompose)
+    implementation(Deps.androidxLifecycleViewmodelKtx)
+    implementation(Deps.wearComposeMaterial)
+    implementation(Deps.wearComposeFoundation)
+    implementation(Deps.playservicesWearable)
 }
