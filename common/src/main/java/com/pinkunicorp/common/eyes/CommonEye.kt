@@ -45,10 +45,10 @@ abstract class CommonEye {
     protected fun getNewGoalPos(
         center: PointF,
         offset: PointF,
-        radius: Float,
+        sourceRadius: Float,
         goalRadius: Float
     ): Pair<Float, Float> {
-        val radius = radius - goalRadius
+        val radius = sourceRadius - goalRadius
         val goalX = center.x + offset.x
         val goalY = center.y + offset.y
         val angle = angleBetween2Lines(

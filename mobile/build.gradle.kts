@@ -1,19 +1,19 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id(BuildPlugins.application)
+    id(BuildPlugins.android)
 }
 
 android {
-    namespace = "com.pinkunicorp.watch_eyes"
-    compileSdk = 33
+    namespace = Configs.namespace
+    compileSdk = Configs.compileSdk
 
     defaultConfig {
-        applicationId = "com.pinkunicorp.watch_eyes"
-        versionCode = 1
-        versionName = "1.0"
-        minSdk = 25
+        applicationId = Configs.applicationId
+        versionCode = Configs.versionCode
+        versionName = Configs.versionName
+        minSdk = Configs.minSdk
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = Configs.testInstrumentationRunner
     }
 
     lint {
@@ -45,34 +45,35 @@ android {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(projects.common)
 
     constraints {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+        implementation(Deps.StdLib.jdk7) {
             because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
         }
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+        implementation(Deps.StdLib.jdk8) {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
     }
 
     coreLibraryDesugaring(Deps.androidDesugarjdklibs)
 
-    implementation(Deps.kotlinxCoroutinesCore)
-    implementation(Deps.kotlinxCoroutinesAndroid)
-    implementation(Deps.kotlinxCoroutinesPlayServices)
-    implementation(Deps.androidxActivityCompose)
-    implementation(Deps.composeMaterial)
-    implementation(Deps.composeUiTooling)
-    implementation(Deps.androidxCoreKtx)
-    implementation(Deps.androidxFragmentKtx)
-    implementation(Deps.androidxLifecycleViewmodelCompose)
-    implementation(Deps.androidxLifecycleRuntimeKtx)
-    implementation(Deps.playservicesWearable)
+    implementation(Deps.KotlinX.Coroutines.core)
+    implementation(Deps.KotlinX.Coroutines.android)
+    implementation(Deps.KotlinX.Coroutines.playServices)
 
-    val navVersion = "2.5.3"
-    implementation("androidx.navigation:navigation-compose:$navVersion")
-    implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
+    implementation(Deps.AndroidX.activityCompose)
+    implementation(Deps.AndroidX.coreKtx)
+    implementation(Deps.AndroidX.fragmentKtx)
+    implementation(Deps.AndroidX.lifecycleViewmodelCompose)
+    implementation(Deps.AndroidX.lifecycleRuntimeKtx)
+    implementation(Deps.AndroidX.navigation)
+
+    implementation(Deps.Compose.material)
+    implementation(Deps.Compose.uiTooling)
+
+    implementation(Deps.Google.playservicesWearable)
+    implementation(Deps.Google.accompanistPager)
 
     wearApp(projects.wear)
 }

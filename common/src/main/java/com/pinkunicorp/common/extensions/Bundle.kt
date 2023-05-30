@@ -9,7 +9,7 @@ fun Bundle.toMap(): Map<String, Any?> {
     val iterator = ks.iterator()
     while (iterator.hasNext()) {
         val key = iterator.next()
-        map[key] = get(key)
+        map[key] = getString(key)
     }
 
     return map

@@ -1,16 +1,16 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    id(BuildPlugins.library)
+    id(BuildPlugins.android)
 }
 
 android {
-    namespace = "com.pinkunicorp.common"
-    compileSdk = 33
+    namespace = Configs.namespace
+    compileSdk = Configs.compileSdk
 
     defaultConfig {
-        minSdk = 25
+        minSdk = Configs.minSdk
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = Configs.testInstrumentationRunner
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -44,21 +44,23 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation(Deps.AndroidX.coreKtx)
+    implementation(Deps.AndroidX.appcompat)
 
-    implementation("androidx.compose.animation:animation:1.4.3")
-    implementation("androidx.compose.animation:animation-core:1.4.3")
+    implementation(Deps.Google.material)
 
-    implementation(Deps.kotlinxCoroutinesCore)
-    implementation(Deps.kotlinxCoroutinesAndroid)
-    implementation(Deps.composeUiTooling)
-    implementation(Deps.composeFoundation)
-    implementation(Deps.wearComposeMaterial)
-    implementation(Deps.wearComposeFoundation)
+    implementation(Deps.Compose.animation)
+    implementation(Deps.Compose.animationCore)
+    implementation(Deps.Compose.uiTooling)
+    implementation(Deps.Compose.foundation)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(Deps.KotlinX.Coroutines.core)
+    implementation(Deps.KotlinX.Coroutines.android)
+
+    implementation(Deps.Wear.Compose.material)
+    implementation(Deps.Wear.Compose.foundation)
+
+    testImplementation(Deps.Test.junit)
+    androidTestImplementation(Deps.Test.extJUnit)
+    androidTestImplementation(Deps.Test.espresso)
 }

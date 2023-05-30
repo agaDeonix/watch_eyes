@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id(BuildPlugins.application)
+    id(BuildPlugins.android)
 }
 
 android {
@@ -18,16 +18,15 @@ android {
 //            storePassword = "my keystore password"
 //        }
 //    }
-    namespace = "com.pinkunicorp.watch_eyes"
-    compileSdk = 33
+    namespace = Configs.namespace
+    compileSdk = Configs.compileSdk
 
     defaultConfig {
-        applicationId = "com.pinkunicorp.watch_eyes"
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = Configs.applicationId
+        versionCode = Configs.versionCode
+        versionName = Configs.versionName
 
-        minSdk = 26
-        targetSdk = 30
+        minSdk = Configs.minSdk
     }
 
     lint {
@@ -70,16 +69,30 @@ android {
 }
 
 dependencies {
-    implementation(project(":common"))
-    implementation(Deps.kotlinxCoroutinesCore)
-    implementation(Deps.kotlinxCoroutinesAndroid)
-    implementation(Deps.kotlinxCoroutinesPlayServices)
-    implementation(Deps.androidxActivityCompose)
-    implementation(Deps.composeUiTooling)
-    implementation(Deps.composeFoundation)
-    implementation(Deps.androidxLifecycleViewmodelCompose)
-    implementation(Deps.androidxLifecycleViewmodelKtx)
-    implementation(Deps.wearComposeMaterial)
-    implementation(Deps.wearComposeFoundation)
-    implementation(Deps.playservicesWearable)
+    implementation(projects.common)
+
+    constraints {
+        implementation(Deps.StdLib.jdk7) {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation(Deps.StdLib.jdk8) {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
+    implementation(Deps.KotlinX.Coroutines.core)
+    implementation(Deps.KotlinX.Coroutines.android)
+    implementation(Deps.KotlinX.Coroutines.playServices)
+
+    implementation(Deps.AndroidX.activityCompose)
+    implementation(Deps.AndroidX.lifecycleViewmodelCompose)
+    implementation(Deps.AndroidX.lifecycleViewmodelKtx)
+
+    implementation(Deps.Compose.uiTooling)
+    implementation(Deps.Compose.foundation)
+
+    implementation(Deps.Wear.Compose.material)
+    implementation(Deps.Wear.Compose.foundation)
+
+    implementation(Deps.Google.playservicesWearable)
 }

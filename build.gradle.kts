@@ -1,11 +1,11 @@
 buildscript {
     dependencies {
-        classpath(Deps.kotlinGradlePlugin)
+        classpath(Deps.classpathKotlinGradlePlugin)
     }
 }
 
 plugins {
-    id("com.android.library") version "8.0.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.7.0" apply false
-    id("org.jetbrains.kotlin.jvm") version "1.7.0" apply false
+    id(BuildPlugins.library) version Versions.libraryPlugin apply false
+    id(BuildPlugins.android) version Versions.androidPlugin apply false
+    id(BuildPlugins.jvm) version Versions.jvmPlugin apply false
 }
