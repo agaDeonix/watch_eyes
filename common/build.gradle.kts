@@ -59,6 +59,7 @@ dependencies {
 
     implementation(Deps.Wear.Compose.material)
     implementation(Deps.Wear.Compose.foundation)
+    implementation("androidx.core:core-ktx:+")
 
     testImplementation(Deps.Test.junit)
     androidTestImplementation(Deps.Test.extJUnit)

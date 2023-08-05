@@ -46,6 +46,7 @@ android {
 
 dependencies {
     implementation(projects.common)
+    implementation("androidx.core:core-ktx:+")
 
     constraints {
         implementation(Deps.StdLib.jdk7) {
@@ -74,6 +75,11 @@ dependencies {
 
     implementation(Deps.Google.playservicesWearable)
     implementation(Deps.Google.accompanistPager)
+
+    implementation(Deps.DI.koin)
+    implementation(Deps.DI.koinCompose)
+
+    testImplementation(Deps.DI.koinTest)
 
     wearApp(projects.wear)
 }

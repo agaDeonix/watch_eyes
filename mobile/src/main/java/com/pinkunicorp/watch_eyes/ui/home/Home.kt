@@ -1,70 +1,148 @@
-package com.pinkunicorp.watch_eyes.screen
+package com.pinkunicorp.watch_eyes.ui.home
 
 import android.graphics.PointF
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Button
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Slider
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pinkunicorp.common.eyes.BlackEye
+import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.Wearable
 import com.pinkunicorp.common.eyes.CommonEye
+import org.koin.androidx.compose.koinViewModel
 
-/**
- * The UI affording the actions the user can take, along with a list of the events and the image
- * to be sent to the wearable devices.
- */
 @Composable
-fun Home(
-    onStateChanged: (state: CommonEye.EyeState) -> Unit,
+fun HomeScreen(
+    navController: NavController,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    viewModel: HomeViewModel = koinViewModel(),
+) {
+    val context = LocalContext.current
+    val dataClient = remember {
+        Wearable.getDataClient(context)
+    }
+    val messageClient = remember {
+        Wearable.getMessageClient(context)
+    }
+    val capabilityClient = remember {
+        Wearable.getCapabilityClient(context)
+    }
+    val nodeClient = remember {
+        Wearable.getNodeClient(context)
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        dataClient.addListener { }
+        messageClient.addListener {}
+        capabilityClient.addListener(
+            {
+
+            },
+            Uri.parse("wear://"),
+            CapabilityClient.FILTER_REACHABLE
+        )
+
+        onDispose {
+            dataClient.removeListener { }
+            messageClient.removeListener { }
+            capabilityClient.removeListener { }
+        }
+    }
+
+    val uiState by viewModel.uiState.collectAsState()
+    HomeContent(
+        uiState = uiState,
+        onStartWearableActivityClick = {
+
+        },
+        onShowLibraryClick = {
+            viewModel.handleEvent(HomeState.Event.OnClickToOther)
+//            navController.navigate(Screen.Library.route)
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    )
+}
+
+@Composable
+fun HomeContent(
+    uiState: HomeState,
     onStartWearableActivityClick: () -> Unit,
     onShowLibraryClick: () -> Unit,
-    currentEye: CommonEye
+    modifier: Modifier = Modifier
 ) {
-    var currentState by remember {
-        mutableStateOf(currentEye.getSupportedStates().first())
-    }
+//    var currentState by remember {
+//        mutableStateOf(currentEye.getSupportedStates().first())
+//    }
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            currentEye.getSupportedStates().forEach {
-                Button(
-                    onClick = {
-                        currentState = it
-                        onStateChanged(CommonEye.EyeState(mode = it))
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == it) Color.Blue else Color.Gray),
-                    modifier = Modifier.padding(15.dp)
-                ) {
-                    StateName(it)
-                }
-            }
+//            currentEye.getSupportedStates().forEach {
+//                Button(
+//                    onClick = {
+//                        currentState = it
+//                        onStateChanged(CommonEye.EyeState(mode = it))
+//                    },
+//                    colors = ButtonDefaults.buttonColors(backgroundColor = if (currentState == it) Color.Blue else Color.Gray),
+//                    modifier = Modifier.padding(15.dp)
+//                ) {
+//                    StateName(it)
+//                }
+//            }
         }
-        when (currentState) {
-            CommonEye.State.MANUAL -> {
-                ManualController(onStateChanged)
-            }
-            CommonEye.State.SPECIAL -> {
-                SpecialController(onStateChanged)
-            }
-            else -> {
-            }
-        }
+//        when (currentState) {
+//            CommonEye.State.MANUAL -> {
+//                ManualController(onStateChanged)
+//            }
+//            CommonEye.State.SPECIAL -> {
+//                SpecialController(onStateChanged)
+//            }
+//            else -> {
+//            }
+//        }
         Spacer(modifier = Modifier.weight(1f))
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Spacer(modifier = Modifier.weight(1f))
@@ -135,23 +213,27 @@ private fun SpecialController(onStartAnimation: (state: CommonEye.EyeState) -> U
             Text(text = "Animation 1")
         }
         Button(
-            onClick = { onStartAnimation(
-                CommonEye.EyeState(
-                    mode = CommonEye.State.SPECIAL,
-                    data = mapOf("animation" to 1)
+            onClick = {
+                onStartAnimation(
+                    CommonEye.EyeState(
+                        mode = CommonEye.State.SPECIAL,
+                        data = mapOf("animation" to 1)
+                    )
                 )
-            ) },
+            },
             modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
         ) {
             Text(text = "Animation 2")
         }
         Button(
-            onClick = { onStartAnimation(
-                CommonEye.EyeState(
-                    mode = CommonEye.State.SPECIAL,
-                    data = mapOf("animation" to 2)
+            onClick = {
+                onStartAnimation(
+                    CommonEye.EyeState(
+                        mode = CommonEye.State.SPECIAL,
+                        data = mapOf("animation" to 2)
+                    )
                 )
-            ) },
+            },
             modifier = Modifier.padding(start = 15.dp, top = 15.dp, end = 15.dp)
         ) {
             Text(text = "Animation 3")
@@ -286,10 +368,10 @@ private fun length(x1: Float, y1: Float, x2: Float, y2: Float): Double {
 @Preview
 @Composable
 fun HomePreview() {
-    Home(
-        onStateChanged = {},
-        onStartWearableActivityClick = {},
-        {},
-        BlackEye()
-    )
+//    HomeScreen(
+//        onStateChanged = {},
+//        onStartWearableActivityClick = {},
+//        {},
+//        BlackEye()
+//    )
 }
