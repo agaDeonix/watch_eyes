@@ -1,4 +1,4 @@
-package com.pinkunicorp.watch_eyes.screen
+package com.pinkunicorp.watch_eyes.ui.library
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

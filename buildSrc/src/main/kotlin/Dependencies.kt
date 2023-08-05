@@ -74,4 +74,10 @@ object Deps {
         val junit = "junit:junit:${Versions.junit}"
     }
 
+    object DI {
+        val koin = "io.insert-koin:koin-android:${Versions.koin}"
+        val koinCompose = "io.insert-koin:koin-androidx-compose:${Versions.koin}"
+        val koinTest = "io.insert-koin:koin-test-junit4:${Versions.koin}"
+    }
+
 }

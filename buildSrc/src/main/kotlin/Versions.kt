@@ -13,7 +13,7 @@ object Versions {
     const val androidxWearCompose = "1.0.2"
 
     const val compose = "1.2.1"
-    const val composeCompiler = "1.2.0"
+    const val composeCompiler = "1.5.1"
     const val composeAnimation = "1.4.3"
 
     const val stdlibJdk = "1.8.0"
@@ -28,4 +28,6 @@ object Versions {
     const val ktlint = "0.46.1"
     const val kotlin = "1.7.0"
     const val kotlinx = "1.6.4"
+
+    const val koin = "3.4.3"
 }

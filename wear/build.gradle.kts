@@ -95,4 +95,5 @@ dependencies {
     implementation(Deps.Wear.Compose.foundation)
 
     implementation(Deps.Google.playservicesWearable)
+    implementation("androidx.core:core-ktx:+")
 }
