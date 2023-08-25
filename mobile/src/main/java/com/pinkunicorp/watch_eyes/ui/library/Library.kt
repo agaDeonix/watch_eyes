@@ -9,14 +9,19 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -24,7 +29,7 @@ import com.pinkunicorp.common.eyes.BlackEye
 import com.pinkunicorp.common.eyes.CommonEye
 import com.pinkunicorp.common.mode.BaseMode
 import com.pinkunicorp.watch_eyes.R
-
+import org.koin.androidx.compose.koinViewModel
 
 data class EyePagerContent(
     val eye: CommonEye
@@ -36,82 +41,107 @@ data class EyePagerContent(
  */
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Library(
-    onBackClick: () -> Unit,
-    allEyes: List<CommonEye>,
-    currentEye: CommonEye,
-    onSelectNewEye: (newEye: CommonEye, pos: Int) -> Unit
+fun LibraryScreen(
+    navController: NavController,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    viewModel: LibraryViewModel = koinViewModel(),
+) {
+    val state by viewModel.uiState.collectAsState()
+    LibraryContent(
+        state = state,
+        handleEvent = viewModel::handleEvent
+    )
+    LaunchedEffect(key1 = state.actions) {
+        state.actions.forEach { action ->
+            when (action) {
+                LibraryUIState.Action.NavigateToBack -> {
+                    navController.navigateUp()
+                }
+            }
+        }
+        viewModel.consumeActions(state.actions)
+    }
+}
+
+@Composable
+fun LibraryContent(
+    state : LibraryUIState,
+    handleEvent: (event: LibraryUIState.Event) -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().background(Color.White),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopAppBar(
             title = { Text(text = "Choose") }, navigationIcon = {
-                IconButton(onClick = { onBackClick() }) {
+                IconButton(onClick = {
+                    handleEvent(LibraryUIState.Event.OnClickToBack)
+                }) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             }
         )
-        val items = allEyes.sortedByDescending { it == currentEye }.map { EyePagerContent(it) }
-        val pagerState = rememberPagerState()
+//        val items = allEyes.sortedByDescending { it == currentEye }.map { EyePagerContent(it) }
+//        val pagerState = rememberPagerState()
 
-        HorizontalPager(
-            count = items.size,
-            state = pagerState,
-            modifier = Modifier.weight(1f)
-        ) { currentPage ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    modifier = Modifier.align(CenterHorizontally),
-                    text = items[currentPage].eye.getName(),
-                    style = MaterialTheme.typography.h4
-                )
-                Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Box(modifier = Modifier.size(150.dp)) {
-                        items[currentPage].eye.drawPreview()
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-                Text(
-                    text = stringResource(id = R.string.library_title_modes),
-                    style = MaterialTheme.typography.h5
-                )
-                LazyColumn {
-                    items[currentPage].eye.modes.forEach { mode ->
-                        item {
-                            ModeDescription(mode = mode)
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                if (items[currentPage].eye != currentEye) {
-                    Button(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        onClick = { onSelectNewEye(items[currentPage].eye, allEyes.indexOf(items[currentPage].eye)) },
-                    ) {
-                        Text(
-                            text = "Select"
-                        )
-                    }
-                }
-            }
-        }
-        if (allEyes.size > 1) {
-            Box(modifier = Modifier.padding(bottom = 24.dp)) {
-                DotsIndicator(
-                    items.size,
-                    selectedIndex = pagerState.currentPage,
-                    selectedColor = Color.DarkGray,
-                    unSelectedColor = Color.LightGray
-                )
-            }
-        }
+//        HorizontalPager(
+//            count = items.size,
+//            state = pagerState,
+//            modifier = Modifier.weight(1f)
+//        ) { currentPage ->
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(16.dp)
+//            ) {
+//                Text(
+//                    modifier = Modifier.align(CenterHorizontally),
+//                    text = items[currentPage].eye.getName(),
+//                    style = MaterialTheme.typography.h4
+//                )
+//                Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+//                    Spacer(modifier = Modifier.weight(1f))
+//                    Box(modifier = Modifier.size(150.dp)) {
+//                        items[currentPage].eye.drawPreview()
+//                    }
+//                    Spacer(modifier = Modifier.weight(1f))
+//                }
+//                Text(
+//                    text = stringResource(id = R.string.library_title_modes),
+//                    style = MaterialTheme.typography.h5
+//                )
+//                LazyColumn {
+//                    items[currentPage].eye.modes.forEach { mode ->
+//                        item {
+//                            ModeDescription(mode = mode)
+//                        }
+//                    }
+//                }
+//                Spacer(modifier = Modifier.weight(1f))
+//                if (items[currentPage].eye != currentEye) {
+//                    Button(
+//                        modifier = Modifier.align(Alignment.CenterHorizontally),
+//                        onClick = { onSelectNewEye(items[currentPage].eye, allEyes.indexOf(items[currentPage].eye)) },
+//                    ) {
+//                        Text(
+//                            text = "Select"
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//        if (allEyes.size > 1) {
+//            Box(modifier = Modifier.padding(bottom = 24.dp)) {
+//                DotsIndicator(
+//                    items.size,
+//                    selectedIndex = pagerState.currentPage,
+//                    selectedColor = Color.DarkGray,
+//                    unSelectedColor = Color.LightGray
+//                )
+//            }
+//        }
     }
 }
 
@@ -166,6 +196,9 @@ fun DotsIndicator(
 
 @Preview
 @Composable
-fun LibraryPreview() {
-    Library({}, listOf(BlackEye()), BlackEye(), { newEye, pos ->  })
+fun LibraryContentPreview() {
+    LibraryContent(
+        state = LibraryUIState(),
+        handleEvent = {}
+    )
 }

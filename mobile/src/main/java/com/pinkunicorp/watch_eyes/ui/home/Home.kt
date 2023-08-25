@@ -26,6 +26,7 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,8 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.DataMap
+import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.pinkunicorp.common.eyes.CommonEye
+import com.pinkunicorp.watch_eyes.ui.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -90,21 +95,43 @@ fun HomeScreen(
     HomeContent(
         uiState = uiState,
         onStartWearableActivityClick = {
-
+            viewModel.handleEvent(HomeUIState.Event.OnClickToOpenWearApp)
         },
         onShowLibraryClick = {
-            viewModel.handleEvent(HomeState.Event.OnClickToOther)
-//            navController.navigate(Screen.Library.route)
+            viewModel.handleEvent(HomeUIState.Event.OnClickToOther)
         },
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
     )
+    LaunchedEffect(key1 = uiState.actions) {
+        uiState.actions.forEach { action ->
+            when (action) {
+                HomeUIState.Action.NavigateToLibrary -> {
+                    navController.navigate(Screen.Library.route)
+                }
+                HomeUIState.Action.OpenWearApp -> {
+                    openWearApp(dataClient)
+                }
+            }
+        }
+        viewModel.consumeActions(uiState.actions)
+    }
+}
+
+fun openWearApp(dataClient: DataClient) {
+    val dataMap = PutDataMapRequest.create("/open").run {
+        dataMap.putDataMap("data", DataMap().apply {
+            putString("data", "data")
+        })
+        asPutDataRequest()
+    }
+    dataClient.putDataItem(dataMap)
 }
 
 @Composable
 fun HomeContent(
-    uiState: HomeState,
+    uiState: HomeUIState,
     onStartWearableActivityClick: () -> Unit,
     onShowLibraryClick: () -> Unit,
     modifier: Modifier = Modifier

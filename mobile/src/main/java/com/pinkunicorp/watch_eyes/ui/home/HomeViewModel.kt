@@ -12,7 +12,7 @@ class HomeViewModel(
     private val getCurrentEyeUseCase: GetCurrentEyeUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeState())
+    private val _uiState = MutableStateFlow(HomeUIState())
     val uiState = _uiState.asStateFlow()
 
     init {
@@ -23,11 +23,31 @@ class HomeViewModel(
         }
     }
 
-    fun handleEvent(event: HomeState.Event) {
+    fun handleEvent(event: HomeUIState.Event) {
         when (event) {
-            HomeState.Event.OnClickToOther -> {
-                _uiState.update { it.copy(currentEye = null) }
+            HomeUIState.Event.OnClickToOther -> {
+                _uiState.update {
+                    it.copy(
+                        actions = it.actions + HomeUIState.Action.NavigateToLibrary
+                    )
+                }
             }
+
+            HomeUIState.Event.OnClickToOpenWearApp -> {
+                _uiState.update {
+                    it.copy(
+                        actions = it.actions + HomeUIState.Action.OpenWearApp
+                    )
+                }
+            }
+        }
+    }
+
+    fun consumeActions(actions: List<HomeUIState.Action>) {
+        _uiState.update {
+            it.copy(
+                actions = it.actions - actions.toSet()
+            )
         }
     }
 

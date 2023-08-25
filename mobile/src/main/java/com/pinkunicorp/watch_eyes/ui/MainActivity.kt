@@ -15,28 +15,18 @@
  */
 package com.pinkunicorp.watch_eyes.ui
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.DataMap
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
-import com.pinkunicorp.common.eyes.CommonEye
-import com.pinkunicorp.common.extensions.toBundle
+import com.pinkunicorp.common.eyes.BlackEye
+import com.pinkunicorp.common.eyes.VampireEye
 import com.pinkunicorp.watch_eyes.ui.home.HomeScreen
-import com.pinkunicorp.watch_eyes.ui.library.Library
-import com.pinkunicorp.watch_eyes.ui.Screen
+import com.pinkunicorp.watch_eyes.ui.library.LibraryScreen
 import kotlinx.coroutines.*
-import kotlinx.coroutines.tasks.await
 
 class MainActivity : ComponentActivity() {
 
@@ -59,17 +49,7 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(navController = navController)
                     }
                     composable(Screen.Library.route) {
-//                        Library(onBackClick = {
-//                            navController.navigateUp()
-//                        },
-//                            allEyes = clientDataViewModel.allEyes,
-//                            currentEye = clientDataViewModel.currentEye,
-//                            onSelectNewEye = { eye, pos ->
-////                                clientDataViewModel.currentEye = eye
-////                                sendSelectedEye(pos)
-//                                navController.navigateUp()
-//                            }
-//                        )
+                        LibraryScreen(navController = navController)
                     }
                 }
             }

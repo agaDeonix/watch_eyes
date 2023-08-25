@@ -9,7 +9,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     single { HomeViewModel(get()) }
-    single { LibraryViewModel() }
+    single { LibraryViewModel(get(), get()) }
     single { EyeRepository() }
     single { GetAllEyesUseCase(get()) }
     single { GetCurrentEyeUseCase(get()) }

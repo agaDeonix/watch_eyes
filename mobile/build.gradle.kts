@@ -12,7 +12,7 @@ android {
         versionCode = Configs.versionCode
         versionName = Configs.versionName
         minSdk = Configs.minSdk
-
+        targetSdk = Configs.compileSdk
         testInstrumentationRunner = Configs.testInstrumentationRunner
     }
 
